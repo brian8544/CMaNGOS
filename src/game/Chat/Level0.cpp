@@ -326,7 +326,7 @@ bool ChatHandler::HandleXPCommandSet(char* args)
     }
 
     float maxRate = sWorld.GetMaxIndividualXPRate();
-    if (modifier < 0.1f)
+    if (modifier < 1.0f)
     {
         SendSysMessage(LANG_XP_RATE_TOO_LOW);
         return false;

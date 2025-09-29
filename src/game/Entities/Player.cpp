@@ -2764,9 +2764,14 @@ void Player::GiveLevel(uint32 level)
     // resend quests status directly
     GetSession()->SetCurrentPlayerLevel(level);
 
-    // Cap XP rate to the maximum allowed
+    // Cap XP rate to the allowed range
     float maxRate = sWorld.GetMaxIndividualXPRate();
-    if (m_experienceModifier > maxRate)
+    if (m_experienceModifier < 1.0f)
+    {
+        SetPlayerXPModifier(1.0f);
+        SendXPRateToPlayer();
+    }
+    else if (m_experienceModifier > maxRate)
     {
         SetPlayerXPModifier(maxRate);
         SendXPRateToPlayer();
@@ -14487,7 +14492,12 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
             Field* fields_xp = result->Fetch();
             m_experienceModifier = fields_xp[0].GetFloat();
             uint32 maxRate = sWorld.GetMaxIndividualXPRate();
-            if (m_experienceModifier > maxRate)
+            if (m_experienceModifier < 1.0f)
+            {
+                m_experienceModifier = 1.0f;
+                CharacterDatabase.PExecute("REPLACE INTO individualxp (CharacterGUID, XPRate) VALUES ('%u', '%f')", GetGUIDLow(), m_experienceModifier);
+            }
+            else if (m_experienceModifier > maxRate)
             {
                 m_experienceModifier = maxRate;
                 CharacterDatabase.PExecute("REPLACE INTO individualxp (CharacterGUID, XPRate) VALUES ('%u', '%f')", GetGUIDLow(), m_experienceModifier);
