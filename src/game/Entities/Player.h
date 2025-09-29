@@ -746,7 +746,12 @@ enum PlayerRestState
 {
     REST_STATE_RESTED           = 0x01,
     REST_STATE_NORMAL           = 0x02,
-    REST_STATE_RAF_LINKED       = 0x04                      // Exact use unknown
+    REST_STATE_RAF_LINKED       = 0x04                       // Exact use unknown
+};
+
+enum PlayerSettings
+{
+    PLAYER_SETTING_XP_MODIFIER = 1,
 };
 
 class PlayerTaxi
@@ -2162,6 +2167,11 @@ class Player : public Unit
 
         void SendMessageToPlayer(std::string const& message) const; // debugging purposes
 
+        float GetPlayerXPModifier() { return m_experienceModifier; }
+        void SetPlayerXPModifier(float modifier) { m_experienceModifier = modifier; }
+        void _SaveXPModifier();
+        void SendXPRateToPlayer();
+
 #ifdef BUILD_DEPRECATED_PLAYERBOT
         // A Player can either have a playerbotMgr (to manage its bots), or have playerbotAI (if it is a bot), or
         // neither. Code that enables bots must create the playerbotMgr and set it using SetPlayerbotMgr.
@@ -2566,6 +2576,8 @@ class Player : public Unit
         std::map<uint32, ItemSetEffect> m_itemSetEffects;
 
         uint32 m_lastDbGuid; bool m_lastGameObject;
+
+        float m_experienceModifier; // XP Boost
 };
 
 void AddItemsSetItem(Player* player, Item* item);

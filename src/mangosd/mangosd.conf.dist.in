@@ -1791,3 +1791,31 @@ Metric.Password = ""
 
 Dummy.Debug1 = 0
 Dummy.Debug2 = 0
+
+###################################################################################################################
+# CUSTOM CONFIGURATION
+#
+#    IndividualXP.Enabled
+#        Enable or disable individual XP system
+#        Default: 0  - Disabled
+#                 1  - Enabled
+#
+#    IndividualXP.DefaultXPRate
+#        Default XP rate for new players
+#        Default: 1
+#
+#    IndividualXP.MaxXPRate
+#        Maximum XP rate for individual XP system
+#        Default: 10
+#
+#    IndividualXP.AnnounceRatesOnLogin
+#        Announce player's current and maximum XP rates on login
+#        Default: 0  - Disabled
+#                 1  - Enabled
+#
+###################################################################################################################
+
+IndividualXP.Enabled = true
+IndividualXP.DefaultXPRate = 1
+IndividualXP.MaxXPRate = 10
+IndividualXP.AnnounceRatesOnLogin = true

@@ -938,6 +938,14 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     if (!pCurrChar->IsStandState() && !pCurrChar->IsStunned())
         pCurrChar->SetStandState(UNIT_STAND_STATE_STAND);
+    
+    if (sWorld.IsIndividualXPEnabled())
+    {
+        if (sWorld.IsIndividualXPAnnounceRatesOnLoginEnabled())
+            pCurrChar->SendXPRateToPlayer();
+    }
+    else
+        pCurrChar->SetPlayerXPModifier(1.0f); // Set to default when system is disabled
 
     m_playerLoading = false;
     delete holder;

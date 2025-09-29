@@ -128,6 +128,15 @@ ChatCommand* ChatHandler::getCommandTable()
         { nullptr,          0,                  false, nullptr,                                        "", nullptr }
     };
 
+    static ChatCommand xpCommandTable[] =
+    {
+        { "set",            SEC_PLAYER,         true,  &ChatHandler::HandleXPCommandSet,               "", nullptr },
+        { "current",        SEC_PLAYER,         true,  &ChatHandler::HandleXPCommandCurrent,           "", nullptr },
+        { "available",      SEC_PLAYER,         true,  &ChatHandler::HandleXPCommandAvailable,         "", nullptr },
+        { "default",        SEC_PLAYER,         true,  &ChatHandler::HandleXPCommandDefault,           "", nullptr },
+        { nullptr,          0,                  false, nullptr,                                        "", nullptr }
+    };
+
     static ChatCommand banlistCommandTable[] =
     {
         { "account",        SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleBanListAccountCommand,      "", nullptr },
@@ -1010,6 +1019,7 @@ ChatCommand* ChatHandler::getCommandTable()
         { "quit",           SEC_CONSOLE,        true,  &ChatHandler::HandleQuitCommand,                "", nullptr },
         { "mmap",           SEC_GAMEMASTER,     false, nullptr,                                        "", mmapCommandTable },
         { "worldstate",     SEC_ADMINISTRATOR,  false, nullptr,                                        "", worldStateTable },
+        { "xp",             SEC_PLAYER,         false, nullptr,                                        "", xpCommandTable },
         { "loot",           SEC_GAMEMASTER,     true,  nullptr,                                        "", lootCommandTable },
 #ifdef BUILD_DEPRECATED_PLAYERBOT
         { "bot",            SEC_PLAYER,         false, &ChatHandler::HandlePlayerbotCommand,           "", nullptr },

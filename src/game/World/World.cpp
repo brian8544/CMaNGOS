@@ -839,6 +839,12 @@ void World::LoadConfigSettings(bool reload)
 
     setConfig(CONFIG_BOOL_REGEN_ZONE_AREA_ON_STARTUP, "Spawns.ZoneArea", false);
 
+    // Individual XP System
+    setConfig(CONFIG_BOOL_INDIVIDUAL_XP_ENABLED, "IndividualXP.Enabled", true);
+    setConfig(CONFIG_UINT32_INDIVIDUAL_XP_DEFAULT_RATE, "IndividualXP.DefaultXPRate", 1);
+    setConfig(CONFIG_UINT32_INDIVIDUAL_XP_MAX_RATE, "IndividualXP.MaxXPRate", 10);
+    setConfig(CONFIG_BOOL_INDIVIDUAL_XP_ANNOUNCE_RATES_ON_LOGIN, "IndividualXP.AnnounceRatesOnLogin", true);
+
     sLog.outString();
 }
 
