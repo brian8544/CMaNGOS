@@ -13,7 +13,7 @@ INSERT INTO `mangos_string` (`entry`, `content_default`, `content_loc1`, `conten
 (11002, 'You can set your XP rate between 0.1 and %.1f', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (11003, 'XP rate too low. Minimum rate is 0.1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (11004, 'XP rate too high. Maximum rate is %.1f', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(11005, 'You have set XP rate to %.1f', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(11005, 'You have set your XP rate to %.1f', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (11006, 'Current XP rate: %.1f', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (11007, 'Your XP rate has been reset to the default value.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (11008, 'Current XP rate: %.1f', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
