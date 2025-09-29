@@ -199,6 +199,8 @@ enum eConfigUInt32Values
     CONFIG_UINT32_CREATURE_PICKPOCKET_RESTOCK_DELAY,
     CONFIG_UINT32_CHANNEL_STATIC_AUTO_TRESHOLD,
     CONFIG_UINT32_LFG_MATCHMAKING_TIMER,
+    CONFIG_UINT32_INDIVIDUAL_XP_MAX_RATE,
+    CONFIG_UINT32_INDIVIDUAL_XP_DEFAULT_RATE,
     CONFIG_UINT32_VALUE_COUNT
 };
 
@@ -354,6 +356,8 @@ enum eConfigBoolValues
     CONFIG_BOOL_DISABLE_INSTANCE_RELOCATE,
     CONFIG_BOOL_PRELOAD_MMAP_TILES,
     CONFIG_BOOL_REGEN_ZONE_AREA_ON_STARTUP,
+    CONFIG_BOOL_INDIVIDUAL_XP_ENABLED,
+    CONFIG_BOOL_INDIVIDUAL_XP_ANNOUNCE_RATES_ON_LOGIN,
     CONFIG_BOOL_VALUE_COUNT
 };
 
@@ -368,6 +372,8 @@ enum RealmType
     REALM_TYPE_FFA_PVP = 16                                 // custom, free for all pvp mode like arena PvP in all zones except rest activated places and sanctuaries
                          // replaced by REALM_PVP in realm list
 };
+
+#define MAX_PLAYER_LEVEL 255
 
 /// Storage class for commands issued for delayed execution
 struct CliCommandHolder
@@ -525,6 +531,12 @@ class World
         /// Are we on a "Player versus Player" server?
         bool IsPvPRealm() const { return (getConfig(CONFIG_UINT32_GAME_TYPE) == REALM_TYPE_PVP || getConfig(CONFIG_UINT32_GAME_TYPE) == REALM_TYPE_RPPVP || getConfig(CONFIG_UINT32_GAME_TYPE) == REALM_TYPE_FFA_PVP); }
         bool IsFFAPvPRealm() const { return getConfig(CONFIG_UINT32_GAME_TYPE) == REALM_TYPE_FFA_PVP; }
+
+        /// Individual XP system
+        uint32 GetMaxIndividualXPRate() const { return getConfig(CONFIG_UINT32_INDIVIDUAL_XP_MAX_RATE); }
+        uint32 GetDefaultIndividualXPRate() const { return getConfig(CONFIG_UINT32_INDIVIDUAL_XP_DEFAULT_RATE); }
+        bool IsIndividualXPEnabled() const { return getConfig(CONFIG_BOOL_INDIVIDUAL_XP_ENABLED); }
+        bool IsIndividualXPAnnounceRatesOnLoginEnabled() const { return getConfig(CONFIG_BOOL_INDIVIDUAL_XP_ANNOUNCE_RATES_ON_LOGIN); }
 
         void KickAll(bool save);
         void KickAllLess(AccountTypes sec);

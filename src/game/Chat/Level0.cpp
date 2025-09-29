@@ -304,3 +304,81 @@ bool ChatHandler::HandleWhisperRestrictionCommand(char* args)
 
     return true;
 }
+
+// Individual XP Rate Commands
+bool ChatHandler::HandleXPCommandSet(char* args)
+{
+    if (!sWorld.IsIndividualXPEnabled())
+    {
+        return false; // Command doesn't exist when system is disabled
+    }
+
+    Player* player = m_session->GetPlayer();
+
+    float modifier;
+    if (!ExtractFloat(&args, modifier))
+    {
+        SendSysMessage(LANG_XP_USAGE_SET);
+        SendSysMessage(LANG_XP_USAGE_EXAMPLE);
+        float maxRate = sWorld.GetMaxIndividualXPRate();
+        PSendSysMessage(LANG_XP_RATE_RANGE, maxRate);
+        return false;
+    }
+
+    float maxRate = sWorld.GetMaxIndividualXPRate();
+    if (modifier < 1.0f)
+    {
+        SendSysMessage(LANG_XP_RATE_TOO_LOW);
+        return false;
+    }
+    else if (modifier > maxRate)
+    {
+        PSendSysMessage(LANG_XP_RATE_TOO_HIGH, maxRate);
+        return false;
+    }
+
+    player->SetPlayerXPModifier(modifier);
+    PSendSysMessage(LANG_XP_RATE_SET, modifier);
+
+    return true;
+}
+
+bool ChatHandler::HandleXPCommandCurrent(char* /*args*/)
+{
+    if (!sWorld.IsIndividualXPEnabled())
+    {
+        return false; // Command doesn't exist when system is disabled
+    }
+
+    Player* player = m_session->GetPlayer();
+    PSendSysMessage(LANG_XP_CURRENT_RATE, player->GetPlayerXPModifier());
+
+    return true;
+}
+
+bool ChatHandler::HandleXPCommandAvailable(char* /*args*/)
+{
+    if (!sWorld.IsIndividualXPEnabled())
+    {
+        return false; // Command doesn't exist when system is disabled
+    }
+
+    float maxRate = sWorld.GetMaxIndividualXPRate();
+    PSendSysMessage(LANG_XP_RATE_RANGE, maxRate);
+
+    return true;
+}
+
+bool ChatHandler::HandleXPCommandDefault(char* /*args*/)
+{
+    if (!sWorld.IsIndividualXPEnabled())
+    {
+        return false; // Command doesn't exist when system is disabled
+    }
+
+    Player* player = m_session->GetPlayer();
+    player->SetPlayerXPModifier(1.0f);
+    SendSysMessage(LANG_XP_RATE_RESET);
+
+    return true;
+}

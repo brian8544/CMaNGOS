@@ -645,6 +645,7 @@ Player::Player(WorldSession* session): Unit(), m_taxiTracker(*this), m_mover(thi
 
     m_lastDbGuid = 0;
     m_lastGameObject = false;
+    m_experienceModifier = 1.0f; // Defaults to 1x XP rates
 }
 
 Player::~Player()
@@ -2672,6 +2673,9 @@ void Player::GiveXP(uint32 xp, Creature* victim, float groupRate)
     if (level >= sWorld.getConfig(CONFIG_UINT32_MAX_PLAYER_LEVEL))
         return;
 
+    if (sWorld.IsIndividualXPEnabled())
+        xp *= m_experienceModifier;
+
     // XP resting bonus for kill
     uint32 rested_bonus_xp = victim ? GetXPRestBonus(xp) : 0;
 
@@ -2759,6 +2763,19 @@ void Player::GiveLevel(uint32 level)
 
     // resend quests status directly
     GetSession()->SetCurrentPlayerLevel(level);
+
+    // Cap XP rate to the allowed range
+    float maxRate = sWorld.GetMaxIndividualXPRate();
+    if (m_experienceModifier < 1.0f)
+    {
+        SetPlayerXPModifier(1.0f);
+        SendXPRateToPlayer();
+    }
+    else if (m_experienceModifier > maxRate)
+    {
+        SetPlayerXPModifier(maxRate);
+        SendXPRateToPlayer();
+    }
 }
 
 void Player::UpdateFreeTalentPoints(bool resetIfNeed)
@@ -14466,6 +14483,36 @@ bool Player::LoadFromDB(ObjectGuid guid, SqlQueryHolder* holder)
     _LoadSpellCooldowns(holder->GetResult(PLAYER_LOGIN_QUERY_LOADSPELLCOOLDOWNS));
     _LoadCreatedInstanceTimers();
 
+    // Load XP modifier from database
+    if (sWorld.IsIndividualXPEnabled())
+    {
+        std::unique_ptr<QueryResult> result = CharacterDatabase.PQuery("SELECT XPRate FROM individualxp WHERE CharacterGUID = %u", GetGUIDLow());
+        if (result)
+        {
+            Field* fields_xp = result->Fetch();
+            m_experienceModifier = fields_xp[0].GetFloat();
+            uint32 maxRate = sWorld.GetMaxIndividualXPRate();
+            if (m_experienceModifier < 1.0f)
+            {
+                m_experienceModifier = 1.0f;
+                CharacterDatabase.PExecute("REPLACE INTO individualxp (CharacterGUID, XPRate) VALUES ('%u', '%f')", GetGUIDLow(), m_experienceModifier);
+            }
+            else if (m_experienceModifier > maxRate)
+            {
+                m_experienceModifier = maxRate;
+                CharacterDatabase.PExecute("REPLACE INTO individualxp (CharacterGUID, XPRate) VALUES ('%u', '%f')", GetGUIDLow(), m_experienceModifier);
+            }
+        }
+        else
+        {
+            m_experienceModifier = float(sWorld.GetDefaultIndividualXPRate());
+        }
+    }
+    else
+    {
+        m_experienceModifier = 1.0f; // Always default when system is disabled
+    }
+
     // Spell code allow apply any auras to dead character in load time in aura/spell/item loading
     // Do now before stats re-calculation cleanup for ghost state unexpected auras
     if (!IsAlive())
@@ -15695,6 +15742,7 @@ void Player::SaveToDB()
     m_reputationMgr.SaveToDB();
     _SaveHonorCP();
     GetSession()->SaveTutorialsData();                      // changed only while character in game
+    _SaveXPModifier();
 
     CharacterDatabase.CommitTransaction();
 
@@ -20481,5 +20529,37 @@ void Player::UpdateRangedWeaponDependantAmmoHasteAura()
         if (highest > 0)
             ApplyAttackTimePercentMod(RANGED_ATTACK, float(highest), true);
         SetHighestAmmoMod(highest);
+    }
+}
+
+void Player::_SaveXPModifier()
+{
+    // Only save XP modifier when individual XP system is enabled
+    if (!sWorld.IsIndividualXPEnabled())
+        return;
+
+    std::unique_ptr<QueryResult> result = CharacterDatabase.PQuery("SELECT XPRate FROM individualxp WHERE CharacterGUID = %u", GetGUIDLow());
+
+    if (result)
+    {
+        Field* fields = result->Fetch();
+        float currentRate = fields[0].GetFloat();
+
+        if (currentRate != m_experienceModifier)
+            CharacterDatabase.PExecute("UPDATE individualxp SET XPRate = '%f' WHERE CharacterGUID = '%u'", m_experienceModifier, GetGUIDLow());
+    }
+    else
+    {
+        CharacterDatabase.PExecute("INSERT INTO individualxp(CharacterGUID,XPRate) VALUES('%u','%f')", GetGUIDLow(), m_experienceModifier);
+    }
+}
+
+void Player::SendXPRateToPlayer()
+{
+    if (WorldSession* session = GetSession())
+    {
+        ChatHandler handler(session);
+        uint32 maxRate = sWorld.GetMaxIndividualXPRate();
+        handler.PSendSysMessage(LANG_XP_LOGIN_MESSAGE_WITH_MAX, m_experienceModifier, maxRate);
     }
 }

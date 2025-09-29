@@ -1114,6 +1114,16 @@ enum MangosStrings
     //                                    10000-10999
 
     // Use for custom patches             11000-11999
+    LANG_XP_USAGE_SET                   = 11000,
+    LANG_XP_USAGE_EXAMPLE               = 11001,
+    LANG_XP_RATE_RANGE                  = 11002,
+    LANG_XP_RATE_TOO_LOW                = 11003,
+    LANG_XP_RATE_TOO_HIGH               = 11004,
+    LANG_XP_RATE_SET                    = 11005,
+    LANG_XP_CURRENT_RATE                = 11006,
+    LANG_XP_RATE_RESET                  = 11007,
+    LANG_XP_LOGIN_MESSAGE               = 11008,
+    LANG_XP_LOGIN_MESSAGE_WITH_MAX      = 11009,
 
     // NOT RESERVED IDS                   12000-1999999999
 };
