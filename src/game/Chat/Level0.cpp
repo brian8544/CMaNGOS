@@ -91,6 +91,9 @@ bool ChatHandler::HandleServerInfoCommand(char* /*args*/)
     uint32 queuedClientsNum = sWorld.GetQueuedSessionCount();
     uint32 maxActiveClientsNum = sWorld.GetMaxActiveSessionCount();
     uint32 maxQueuedClientsNum = sWorld.GetMaxQueuedSessionCount();
+    #ifdef ENABLE_PLAYERBOTS
+    uint32 onlineBotsCount = sWorld.GetOnlineBotsCount();
+    #endif
     std::string str = secsToTimeString(sWorld.GetUptime());
 
     char const* full;
@@ -103,7 +106,11 @@ bool ChatHandler::HandleServerInfoCommand(char* /*args*/)
     PSendSysMessage(LANG_USING_WORLD_DB, sWorld.GetDBVersion());
     PSendSysMessage(LANG_USING_EVENT_AI, sWorld.GetCreatureEventAIVersion());
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
+    #ifdef ENABLE_PLAYERBOTS
+    PSendSysMessage("Online bots: %u.", onlineBotsCount);
+    #endif
     PSendSysMessage(LANG_UPTIME, str.c_str());
+    PSendSysMessage("Update time diff: %u (avg: %u, max: %u).", sWorld.GetCurrentDiff(), sWorld.GetAverageDiff(), sWorld.GetMaxDiff());
 
     return true;
 }

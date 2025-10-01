@@ -32,6 +32,7 @@
 #include "Globals/GraveyardManager.h"
 #include "LFG/LFGQueue.h"
 #include "BattleGround/BattleGroundQueue.h"
+#include "Custom/Custom.h"
 
 #include <set>
 #include <list>
@@ -373,8 +374,6 @@ enum RealmType
                          // replaced by REALM_PVP in realm list
 };
 
-#define MAX_PLAYER_LEVEL 255
-
 /// Storage class for commands issued for delayed execution
 struct CliCommandHolder
 {
@@ -417,6 +416,9 @@ class World
         uint32 GetMaxQueuedSessionCount() const { return m_maxQueuedSessionCount; }
         uint32 GetMaxActiveSessionCount() const { return m_maxActiveSessionCount; }
         uint32 GetUniqueSessionCount() const { return m_uniqueSessionCount.size(); }
+        #ifdef ENABLE_PLAYERBOTS
+        uint32 GetOnlineBotsCount() const { return Custom::GetOnlineBotsCount(); }
+        #endif
         // player counts
         void SetOnlinePlayer(Team team, uint8 race, uint8 plClass, bool apply); // threadsafe
         uint32 GetOnlineTeamPlayers(bool alliance) const { return m_onlineTeams[alliance]; }
@@ -591,10 +593,8 @@ class World
         static uint32 GetCurrentMSTime() { return m_currentMSTime; }
         static TimePoint GetCurrentClockTime() { return m_currentTime; }
         static uint32 GetCurrentDiff() { return m_currentDiff; }
-#ifdef ENABLE_PLAYERBOTS
         static uint32 GetAverageDiff() { return m_averageDiff; }
         static uint32 GetMaxDiff() { return m_maxDiff; }
-#endif
 
         template<typename T>
         void ExecuteForAllSessions(T executor) const
