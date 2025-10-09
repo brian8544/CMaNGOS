@@ -8,6 +8,7 @@
 extern void AddSC_battleground();
 
 // custom
+extern void AddSC_custom_paladin_spells_giver();
 
 // examples
 extern void AddSC_example_creature();
@@ -213,6 +214,7 @@ void AddScripts()
     AddSC_battleground();
 
     // custom
+    AddSC_custom_paladin_spells_giver();
 
     // examples
     AddSC_example_creature();
