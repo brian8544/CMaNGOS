@@ -593,8 +593,10 @@ class World
         static uint32 GetCurrentMSTime() { return m_currentMSTime; }
         static TimePoint GetCurrentClockTime() { return m_currentTime; }
         static uint32 GetCurrentDiff() { return m_currentDiff; }
+        #ifdef ENABLE_PLAYERBOTS
         static uint32 GetAverageDiff() { return m_averageDiff; }
         static uint32 GetMaxDiff() { return m_maxDiff; }
+        #endif
 
         template<typename T>
         void ExecuteForAllSessions(T executor) const

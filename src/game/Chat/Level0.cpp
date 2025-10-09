@@ -110,7 +110,14 @@ bool ChatHandler::HandleServerInfoCommand(char* /*args*/)
     PSendSysMessage("Online bots: %u.", onlineBotsCount);
     #endif
     PSendSysMessage(LANG_UPTIME, str.c_str());
-    PSendSysMessage("Update time diff: %u (avg: %u, max: %u).", sWorld.GetCurrentDiff(), sWorld.GetAverageDiff(), sWorld.GetMaxDiff());
+    PSendSysMessage(
+    #ifdef ENABLE_PLAYERBOTS
+        "Update time diff: %u (avg: %u, max: %u).", sWorld.GetCurrentDiff(), sWorld.GetAverageDiff(), sWorld.GetMaxDiff()
+    #else
+        "Update time diff: %u.", sWorld.GetCurrentDiff()
+    #endif
+    );
+
 
     return true;
 }
