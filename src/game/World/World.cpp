@@ -1530,11 +1530,11 @@ void World::Update(uint32 diff)
 
     m_averageDiff = (uint32)(m_currentDiffSum / m_histDiff.size());
 
-    if (m_currentDiffSumIndex && m_currentDiffSumIndex % 60 == 0)
+    /* if (m_currentDiffSumIndex && m_currentDiffSumIndex % 60 == 0)
     {
         sLog.outBasic("Avg Diff: %u. Sessions online: %u.", m_averageDiff, (uint32)GetActiveSessionCount());
         sLog.outBasic("Max Diff: %u.", m_maxDiff);
-    }
+    }*/
 
     if (m_currentDiffSum % 3000 == 0)
     {
